@@ -80,7 +80,7 @@ DATABASES = {
         "NAME": "registro_de_tarefas",
         "USER": "suelly_usuario",
         "PASSWORD": "Sk151181",
-        "HOST": "DESKTOP-48P9BRS\SQLEXPRESS",
+        "HOST": r"DESKTOP-48P9BRS\SQLEXPRESS",
         "PORT": "",
         "OPTIONS": {
             "driver": "ODBC Driver 17 for SQL Server",
