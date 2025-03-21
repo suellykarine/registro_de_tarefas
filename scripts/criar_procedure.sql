@@ -13,9 +13,13 @@ AS
 BEGIN
     SET NOCOUNT ON;
 
-    INSERT INTO dbo.tarefas_tarefa (descricao, status, data_criacao)
-    VALUES (@descricao, @status, GETDATE());
+    INSERT INTO dbo.tarefas_tarefa (descricao, status, data_criacao, data_conclusao)
+    VALUES (@descricao, @status, GETDATE(), NULL);
 
-    SET @nova_tarefa_id = SCOPE_IDENTITY();
+     SET @nova_tarefa_id = SCOPE_IDENTITY();
+
+    SELECT tarefa_id, descricao, status, data_criacao, data_conclusao
+    FROM dbo.tarefas_tarefa
+    WHERE tarefa_id = @nova_tarefa_id;
 END;
 GO

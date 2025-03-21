@@ -4,12 +4,21 @@ from django.db import connection
 def adicionar_tarefa(descricao, status):
     try:
         with connection.cursor() as cursor:
-            cursor.execute("EXEC sp_adicionar_tarefa %s, %s", [descricao, status])
-            nova_tarefa_id = cursor.fetchone()
-            if nova_tarefa_id:
-                return nova_tarefa_id[0]
+            cursor.execute(
+                "DECLARE @nova_tarefa_id INT; EXEC sp_adicionar_tarefa %s, %s, @nova_tarefa_id OUTPUT; SELECT tarefa_id, descricao, status, data_criacao, data_conclusao FROM dbo.tarefas_tarefa WHERE tarefa_id = @nova_tarefa_id;",
+                [descricao, status],
+            )
+            resultado = cursor.fetchone()
+            if resultado:
+                return {
+                    "tarefa_id": resultado[0],
+                    "descricao": resultado[1],
+                    "status": resultado[2],
+                    "data_criacao": resultado[3],
+                    "data_conclusao": resultado[4],
+                }
             else:
-                raise Exception("Erro ao obter o ID da tarefa.")
+                raise Exception("Erro ao obter os dados da tarefa.")
     except Exception as e:
         print(f"Erro ao adicionar tarefa: {e}")
         return None
@@ -19,14 +28,18 @@ def atualizar_status_tarefa(tarefa_id, novo_status):
     try:
         with connection.cursor() as cursor:
             cursor.execute(
-                "DECLARE @resultado INT; EXEC sp_atualizar_status_tarefa %s, %s, @resultado OUTPUT; SELECT @resultado;",
+                "EXEC sp_atualizar_status_tarefa %s, %s;",
                 [tarefa_id, novo_status],
             )
             resultado = cursor.fetchone()
 
-            if resultado is None:
+            if resultado:
+                return {
+                    "detail": "Status da tarefa atualizado com sucesso.",
+                    "status": resultado[0],
+                }
+            else:
                 return {"detail": "Erro ao atualizar o status da tarefa."}
-            return {"detail": "Status atualizado com sucesso."}
     except Exception as e:
         return {"detail": f"Erro ao atualizar status: {str(e)}"}
 
