@@ -35,32 +35,36 @@ def gerar_relatorio_tarefas():
     with connection.cursor() as cursor:
         cursor.execute("EXEC sp_gerar_relatorio_tarefas")
 
+        resultado_total = cursor.fetchall()
+        cursor.nextset()
         resultado_contagem = cursor.fetchall()
         cursor.nextset()
         resultado_detalhes = cursor.fetchall()
 
     relatorio = {
-        "concluidas": {"quantidade": 0, "tarefas": []},
-        "pendentes": {"quantidade": 0, "tarefas": []},
+        "quantidade total de tarefas": resultado_total[0][0] if resultado_total else 0,
+        "tarefas concluidas": {"quantidade": 0, "tarefas": []},
+        "tarefas pendentes": {"quantidade": 0, "tarefas": []},
     }
 
     for row in resultado_contagem:
         categoria = row[0].strip().lower()
         if "concluída" in categoria or "concluida" in categoria:
-            relatorio["concluidas"]["quantidade"] = row[1]
+            relatorio["tarefas concluidas"]["quantidade"] = row[1]
         elif "pendente" in categoria:
-            relatorio["pendentes"]["quantidade"] = row[1]
+            relatorio["tarefas pendentes"]["quantidade"] = row[1]
 
     for row in resultado_detalhes:
         tarefa = {
             "tarefa_id": row[0],
             "descricao": row[1],
             "status": row[2].strip().lower(),
-            "data_conclusao": row[3],
+            "data_criacao": row[3],
+            "data_conclusao": row[4],
         }
         if tarefa["status"] in ["concluída", "concluida"]:
-            relatorio["concluidas"]["tarefas"].append(tarefa)
+            relatorio["tarefas concluidas"]["tarefas"].append(tarefa)
         elif tarefa["status"] == "pendente":
-            relatorio["pendentes"]["tarefas"].append(tarefa)
+            relatorio["tarefas pendentes"]["tarefas"].append(tarefa)
 
     return relatorio

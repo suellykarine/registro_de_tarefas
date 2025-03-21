@@ -1,4 +1,5 @@
 from django.urls import path
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 
 from . import views
 from .views import (
@@ -18,4 +19,9 @@ urlpatterns = [
     ),
     path("tarefas/<int:pk>/excluir/", excluir_tarefa),
     path("tarefas/relatorio/", relatorio_tarefas),
+    path(
+        "api/docs/",
+        SpectacularSwaggerView.as_view(url_name="schema"),
+        name="swagger-ui",
+    ),
 ]

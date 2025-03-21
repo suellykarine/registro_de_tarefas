@@ -3,6 +3,13 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
+from .docs import (
+    atualizar_status_schema,
+    criar_tarefa_schema,
+    excluir_tarefa_schema,
+    listar_tarefas_schema,
+    relatorio_tarefas_schema,
+)
 from .models import Tarefa
 from .procedures import (
     adicionar_tarefa,
@@ -12,6 +19,7 @@ from .procedures import (
 from .serializers import TarefaSerializer
 
 
+@criar_tarefa_schema
 @api_view(["POST"])
 def criar_tarefa(request):
     descricao = request.data.get("descricao")
@@ -42,6 +50,7 @@ def criar_tarefa(request):
         )
 
 
+@listar_tarefas_schema
 @api_view(["GET"])
 def listar_tarefas(request):
     if request.method == "GET":
@@ -50,6 +59,7 @@ def listar_tarefas(request):
         return Response(serializer.data)
 
 
+@atualizar_status_schema
 @api_view(["PATCH"])
 def atualizar_status(request, pk):
     try:
@@ -81,6 +91,7 @@ def atualizar_status(request, pk):
         )
 
 
+@excluir_tarefa_schema
 @api_view(["DELETE"])
 def excluir_tarefa(request, pk):
     try:
@@ -96,6 +107,7 @@ def excluir_tarefa(request, pk):
         )
 
 
+@relatorio_tarefas_schema
 @api_view(["GET"])
 def relatorio_tarefas(request):
     try:
