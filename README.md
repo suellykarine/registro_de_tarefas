@@ -162,8 +162,13 @@ BEGIN
     UPDATE tarefas_tarefa
     SET
         status = @novo_status,
-        data_conclusao = GETDATE()
+        data_conclusao = CASE
+                            WHEN @novo_status = 'concluida' THEN GETDATE()
+                            ELSE data_conclusao
+                          END
     WHERE tarefa_id = @tarefa_id;
+
+    SELECT @novo_status AS novo_status;
 END;
 
 ```
@@ -251,7 +256,8 @@ END;
 
 ```json
 {
-  "detail": "Status da tarefa atualizado com sucesso."
+  "detail": "Status da tarefa atualizado com sucesso.",
+  "status": "concluida"
 }
 ```
 
