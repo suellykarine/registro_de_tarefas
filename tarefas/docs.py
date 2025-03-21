@@ -25,7 +25,14 @@ criar_tarefa_schema = extend_schema(
             examples=[
                 OpenApiExample(
                     "Tarefa criada com sucesso",
-                    value={"detail": "Tarefa criada com sucesso", "tarefa_id": 1},
+                    value={
+                        "detail": "Tarefa criada com sucesso",
+                        "tarefa_id": 35,
+                        "descricao": "Enviar relatório",
+                        "status": "pendente",
+                        "data_criacao": "2025-03-21T16:35:56.646666",
+                        "data_conclusao": None,
+                    },
                     response_only=True,
                 ),
             ],
@@ -140,7 +147,10 @@ atualizar_status_schema = extend_schema(
             examples=[
                 OpenApiExample(
                     "Status atualizado com sucesso",
-                    value={"detail": "Status da tarefa atualizado com sucesso."},
+                    value={
+                        "detail": "Status da tarefa atualizado com sucesso.",
+                        "status": "concluida",
+                    },
                     response_only=True,
                 ),
             ],

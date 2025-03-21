@@ -32,17 +32,21 @@ def criar_tarefa(request):
         )
 
     try:
-        with connection.cursor() as cursor:
-            nova_tarefa_id = None
-            cursor.execute(
-                "DECLARE @nova_tarefa_id INT; EXEC sp_adicionar_tarefa %s, %s, @nova_tarefa_id OUTPUT; SELECT @nova_tarefa_id;",
-                [descricao, status_tarefa],
+        resultado = adicionar_tarefa(descricao, status_tarefa)
+        if resultado:
+            return Response(
+                {
+                    "detail": "Tarefa criada com sucesso",
+                    "tarefa_id": resultado["tarefa_id"],
+                    "descricao": resultado["descricao"],
+                    "status": resultado["status"],
+                    "data_criacao": resultado["data_criacao"],
+                    "data_conclusao": resultado["data_conclusao"],
+                },
+                status=status.HTTP_201_CREATED,
             )
-            nova_tarefa_id = cursor.fetchone()[0]
-        return Response(
-            {"detail": "Tarefa criada com sucesso", "tarefa_id": nova_tarefa_id},
-            status=status.HTTP_201_CREATED,
-        )
+        else:
+            raise Exception("Erro ao obter os dados da tarefa.")
     except Exception as e:
         return Response(
             {"detail": f"Erro ao criar a tarefa: {str(e)}"},
@@ -71,19 +75,23 @@ def atualizar_status(request, pk):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        with connection.cursor() as cursor:
-            cursor.execute(
-                "EXEC sp_atualizar_status_tarefa %s, %s;",
-                [pk, novo_status],
+        resultado = atualizar_status_tarefa(pk, novo_status)
+
+        if "status" in resultado:
+            return Response(
+                {
+                    "detail": "Status da tarefa atualizado com sucesso.",
+                    "status": resultado["status"],
+                },
+                status=status.HTTP_200_OK,
+            )
+        else:
+            return Response(
+                {"detail": resultado["detail"]},
+                status=status.HTTP_400_BAD_REQUEST,
             )
 
-        return Response(
-            {"detail": "Status da tarefa atualizado com sucesso."},
-            status=status.HTTP_200_OK,
-        )
-
     except Exception as e:
-
         print(f"Erro ao atualizar o status: {e}")
         return Response(
             {"detail": f"Erro interno no servidor: {str(e)}"},
