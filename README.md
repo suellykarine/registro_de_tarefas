@@ -251,7 +251,8 @@ END;
 
 ```json
 {
-  "detail": "Status da tarefa atualizado com sucesso."
+   "detail": "Status da tarefa atualizado com sucesso.",
+  "status": "concluida"
 }
 ```
 
