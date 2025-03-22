@@ -273,10 +273,36 @@ Respostas
 
 `PATCH /tarefas/<int:pk>/atualizar-status/`
 
-```json
+#### Descrição
+Atualiza uma tarefa específica com base no ID (pk) fornecido.
+
+#### Parâmetros
+pk (obrigatório): ID da tarefa que será atualizada.
+
+Respostas
+200 OK: 
+```http
 {
-   "detail": "Status da tarefa atualizado com sucesso.",
+  "detail": "Status da tarefa atualizado com sucesso.",
   "status": "concluida"
+
+```
+400: 
+```http
+{
+  "detail": "O campo 'status' é obrigatório."
+}
+```
+404: 
+```http
+{
+  "detail": "Tarefa não encontrada."
+}
+```
+500:
+```http
+{
+  "detail": "Erro ao excluir a tarefa"
 }
 ```
 
