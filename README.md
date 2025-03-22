@@ -261,10 +261,27 @@ END;
 
 `DELETE /tarefas/<int:pk>/excluir/`
 
+#### Descrição
+Exclui uma tarefa específica com base no ID (pk) fornecido.
+
+#### Parâmetros
+pk (obrigatório): ID da tarefa que será excluída.
+
+Respostas
+200 OK: 
 ```http
-{ "detail": "Tarefa excluída com sucesso."
+{
+"detail": "Tarefa excluída com sucesso."
 }
 ```
+400: 
+{
+  "detail": "Tarefa não encontrada."
+}
+500:
+{
+  "detail": "Erro ao excluir a tarefa"
+}
 
 ### Gerar relatório de tarefas
 
