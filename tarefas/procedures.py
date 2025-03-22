@@ -5,7 +5,12 @@ def adicionar_tarefa(descricao, status):
     try:
         with connection.cursor() as cursor:
             cursor.execute(
-                "DECLARE @nova_tarefa_id INT; EXEC sp_adicionar_tarefa %s, %s, @nova_tarefa_id OUTPUT; SELECT tarefa_id, descricao, status, data_criacao, data_conclusao FROM dbo.tarefas_tarefa WHERE tarefa_id = @nova_tarefa_id;",
+                """
+                DECLARE @nova_tarefa_id INT;
+                EXEC sp_adicionar_tarefa %s, %s, @nova_tarefa_id OUTPUT;
+                SELECT tarefa_id, descricao, status, data_criacao, data_conclusao
+                FROM dbo.tarefas_tarefa WHERE tarefa_id = @nova_tarefa_id;
+                """,
                 [descricao, status],
             )
             resultado = cursor.fetchone()
@@ -35,7 +40,6 @@ def atualizar_status_tarefa(tarefa_id, novo_status):
 
             if resultado:
                 return {
-                    "detail": "Status da tarefa atualizado com sucesso.",
                     "status": resultado[0],
                 }
             else:

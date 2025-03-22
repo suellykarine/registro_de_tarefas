@@ -31,6 +31,12 @@ def criar_tarefa(request):
             status=status.HTTP_400_BAD_REQUEST,
         )
 
+    if status_tarefa not in ["pendente", "concluida"]:
+        return Response(
+            {"detail": 'Status inválido. O status deve ser "pendente" ou "concluida".'},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
     try:
         resultado = adicionar_tarefa(descricao, status_tarefa)
         if resultado:

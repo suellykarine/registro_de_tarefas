@@ -16,10 +16,18 @@ Este projeto consiste em um sistema de registro de tarefas desenvolvido em Pytho
     - [Gerar Relatório de Tarefas](#gerar-relatório-de-tarefas)
   - [Endpoints da API](#endpoints-da-api)
     - [Criar uma nova tarefa](#criar-uma-nova-tarefa)
+      - [Descrição](#descrição)
+      - [Request Body](#request-body)
     - [Listar todas as tarefas](#listar-todas-as-tarefas)
+      - [Descrição](#descrição-1)
     - [Atualizar o status de uma tarefa](#atualizar-o-status-de-uma-tarefa)
+      - [Descrição](#descrição-2)
+      - [Parâmetros](#parâmetros)
     - [Excluir uma tarefa](#excluir-uma-tarefa)
+      - [Descrição](#descrição-3)
+      - [Parâmetros](#parâmetros-1)
     - [Gerar relatório de tarefas](#gerar-relatório-de-tarefas-1)
+      - [Descrição](#descrição-4)
   - [Relatórios](#relatórios)
   - [Swagger e Documentação](#swagger-e-documentação)
   - [Tecnologias Utilizadas](#tecnologias-utilizadas)
@@ -137,8 +145,8 @@ AS
 BEGIN
     SET NOCOUNT ON;
 
-   
-    IF @status NOT IN ('pendente', 'concluida') 
+
+    IF @status NOT IN ('pendente', 'concluida')
     BEGIN
         RAISERROR('Status inválido. O status deve ser "pendente" ou "concluida".', 16, 1);
         RETURN;
@@ -182,9 +190,9 @@ BEGIN
     END
 
     UPDATE tarefas_tarefa
-    SET 
+    SET
         status = @novo_status,
-        data_conclusao = CASE 
+        data_conclusao = CASE
                             WHEN @novo_status = 'concluida' THEN GETDATE()
                             ELSE data_conclusao
                           END
@@ -241,18 +249,22 @@ END;
 `POST /tarefas/`
 
 #### Descrição
+
 Adiciona uma nova tarefa ao sistema.
 
 #### Request Body
+
 ```json
 {
   "descricao": "Estudar python",
   "status": "pendente"
 }
 ```
+
 Respostas:
 
 201:
+
 ```json
 {
   "detail": "Tarefa criada com sucesso",
@@ -263,13 +275,17 @@ Respostas:
   "data_conclusao": null
 }
 ```
+
 400:
+
 ```http
 {
   "detail": "descrição e status são obrigatórios."
 }
 ```
+
 500:
+
 ```http
 {
   "detail": "Erro ao cadastrar uma tarefa"
@@ -281,11 +297,13 @@ Respostas:
 `GET /tarefas/listar/`
 
 #### Descrição
+
 Listar todas as tarefas cadastradas.
 
 Respostas
 
-200 : 
+200 :
+
 ```json
 [
   {
@@ -304,7 +322,9 @@ Respostas
   }
 ]
 ```
+
 500:
+
 ```http
 {
   "detail": "Erro ao listar as tarefas"
@@ -316,33 +336,42 @@ Respostas
 `PATCH /tarefas/<int:pk>/atualizar-status/`
 
 #### Descrição
+
 Atualiza uma tarefa específica com base no ID (pk) fornecido.
 
 #### Parâmetros
+
 pk (obrigatório): ID da tarefa que será atualizada.
 
 Respostas
 
-200: 
+200:
+
 ```http
 {
   "detail": "Status da tarefa atualizado com sucesso.",
   "status": "concluida"
 
 ```
-400: 
+
+400:
+
 ```http
 {
   "detail": "O campo 'status' é obrigatório."
 }
 ```
-404: 
+
+404:
+
 ```http
 {
   "detail": "Tarefa não encontrada."
 }
 ```
+
 500:
+
 ```http
 {
   "detail": "Erro ao atualizar uma tarefa"
@@ -354,26 +383,33 @@ Respostas
 `DELETE /tarefas/<int:pk>/excluir/`
 
 #### Descrição
+
 Exclui uma tarefa específica com base no ID (pk) fornecido.
 
 #### Parâmetros
+
 pk (obrigatório): ID da tarefa que será excluída.
 
 Respostas
 
-200 : 
+200 :
+
 ```http
 {
 "detail": "Tarefa excluída com sucesso."
 }
 ```
-400: 
+
+400:
+
 ```http
 {
   "detail": "Tarefa não encontrada."
 }
 ```
+
 500:
+
 ```http
 {
   "detail": "Erro ao excluir a tarefa"
@@ -385,11 +421,12 @@ Respostas
 `GET /tarefas/relatorio/`
 
 #### Descrição
+
 Gera um relatório com o total de tarefas incluindo as pendentes e concluídas e seus respectivos detalhes.
 
 Respostas
 
-200 : 
+200 :
 
 ```json
 {
@@ -420,7 +457,9 @@ Respostas
   }
 }
 ```
+
 500:
+
 ```http
 {
   "detail": "Erro ao gerar relatório"
