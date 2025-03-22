@@ -249,6 +249,7 @@ Respostas:
 Listar todas as tarefas cadastradas.
 
 Respostas
+
 200 : 
 ```json
 [
@@ -324,7 +325,8 @@ Exclui uma tarefa específica com base no ID (pk) fornecido.
 pk (obrigatório): ID da tarefa que será excluída.
 
 Respostas
-200 OK: 
+
+200 : 
 ```http
 {
 "detail": "Tarefa excluída com sucesso."
