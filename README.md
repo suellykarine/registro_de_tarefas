@@ -275,13 +275,17 @@ Respostas
 }
 ```
 400: 
+```http
 {
   "detail": "Tarefa não encontrada."
 }
+```
 500:
+```http
 {
   "detail": "Erro ao excluir a tarefa"
 }
+```
 
 ### Gerar relatório de tarefas
 
