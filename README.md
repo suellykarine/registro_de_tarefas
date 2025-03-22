@@ -211,6 +211,11 @@ END;
 ### Criar uma nova tarefa
 
 `POST /tarefas/`
+
+#### Descrição
+Cria uma nova tarefa.
+Respostas:
+
 201:
 ```json
 {
@@ -243,7 +248,7 @@ END;
 Listar todas as tarefas cadastradas.
 
 Respostas
-200 OK: 
+200 : 
 ```json
 [
   {
@@ -280,7 +285,7 @@ Atualiza uma tarefa específica com base no ID (pk) fornecido.
 pk (obrigatório): ID da tarefa que será atualizada.
 
 Respostas
-200 OK: 
+200: 
 ```http
 {
   "detail": "Status da tarefa atualizado com sucesso.",
