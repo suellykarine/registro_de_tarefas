@@ -351,6 +351,7 @@ Respostas
 Gera um relatório com o total de tarefas incluindo as pendentes e concluídas e seus respectivos detalhes.
 
 Respostas
+
 200 : 
 
 ```json
