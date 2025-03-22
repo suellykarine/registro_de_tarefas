@@ -131,16 +131,25 @@ AS
 BEGIN
     SET NOCOUNT ON;
 
+   
+    IF @status NOT IN ('pendente', 'concluida') 
+    BEGIN
+        RAISERROR('Status inválido. O status deve ser "pendente" ou "concluida".', 16, 1);
+        RETURN;
+    END
+
+
     INSERT INTO dbo.tarefas_tarefa (descricao, status, data_criacao, data_conclusao)
     VALUES (@descricao, @status, GETDATE(), NULL);
 
-     SET @nova_tarefa_id = SCOPE_IDENTITY();
+    SET @nova_tarefa_id = SCOPE_IDENTITY();
 
     SELECT tarefa_id, descricao, status, data_criacao, data_conclusao
     FROM dbo.tarefas_tarefa
     WHERE tarefa_id = @nova_tarefa_id;
 END;
 GO
+
 
 ```
 
@@ -154,18 +163,31 @@ AS
 BEGIN
     SET NOCOUNT ON;
 
-    IF NOT EXISTS (SELECT 1 FROM tarefas_tarefa WHERE tarefa_id = @tarefa_id)
+     IF NOT EXISTS (SELECT 1 FROM tarefas_tarefa WHERE tarefa_id = @tarefa_id)
     BEGIN
         RAISERROR('Tarefa não encontrada.', 16, 1);
         RETURN;
     END
 
+    IF @novo_status NOT IN ('concluida', 'pendente')
+    BEGIN
+        RAISERROR('Status inválido. O status deve ser "concluida" ou "pendente".', 16, 1);
+        RETURN;
+    END
+
     UPDATE tarefas_tarefa
-    SET
+    SET 
         status = @novo_status,
-        data_conclusao = GETDATE()
+        data_conclusao = CASE 
+                            WHEN @novo_status = 'concluida' THEN GETDATE()
+                            ELSE data_conclusao
+                          END
     WHERE tarefa_id = @tarefa_id;
+
+
+    SELECT @novo_status AS novo_status;
 END;
+
 
 ```
 
