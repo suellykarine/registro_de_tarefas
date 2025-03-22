@@ -29,7 +29,7 @@ Este projeto consiste em um sistema de registro de tarefas desenvolvido em Pytho
 
 ### Pré-requisitos
 
-- Python 3.9+
+- Python 3.13.2
 - Django==5.0.13
 - djangorestframework==3.15.2
 - mssql-django==1.5
