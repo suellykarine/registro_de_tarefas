@@ -5,12 +5,18 @@ AS
 BEGIN
     SET NOCOUNT ON;
 
-    IF NOT EXISTS (SELECT 1 FROM tarefas_tarefa WHERE tarefa_id = @tarefa_id)
+     IF NOT EXISTS (SELECT 1 FROM tarefas_tarefa WHERE tarefa_id = @tarefa_id)
     BEGIN
         RAISERROR('Tarefa não encontrada.', 16, 1);
         RETURN;
     END
-  
+
+    IF @novo_status NOT IN ('concluida', 'pendente')
+    BEGIN
+        RAISERROR('Status inválido. O status deve ser "concluida" ou "pendente".', 16, 1);
+        RETURN;
+    END
+
     UPDATE tarefas_tarefa
     SET 
         status = @novo_status,
@@ -19,6 +25,7 @@ BEGIN
                             ELSE data_conclusao
                           END
     WHERE tarefa_id = @tarefa_id;
+
 
     SELECT @novo_status AS novo_status;
 END;

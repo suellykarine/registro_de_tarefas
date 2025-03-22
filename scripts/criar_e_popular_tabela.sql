@@ -1,7 +1,6 @@
 USE registro_de_tarefas;
 GO
 
-
 IF OBJECT_ID('dbo.tarefas_tarefa', 'U') IS NOT NULL
     DROP TABLE dbo.tarefas_tarefa;
 GO
@@ -10,7 +9,7 @@ GO
 CREATE TABLE dbo.tarefas_tarefa (
     tarefa_id INT IDENTITY(1,1) PRIMARY KEY,
     descricao VARCHAR(255) NOT NULL,
-    status VARCHAR(50) NOT NULL,
+    status VARCHAR(50) NOT NULL CHECK (status IN ('pendente', 'concluída')),
     data_criacao DATETIME2 NOT NULL DEFAULT GETDATE(),
     data_conclusao DATETIME2 NULL
 );

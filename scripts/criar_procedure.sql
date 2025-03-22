@@ -13,10 +13,18 @@ AS
 BEGIN
     SET NOCOUNT ON;
 
+   
+    IF @status NOT IN ('pendente', 'concluida') 
+    BEGIN
+        RAISERROR('Status inválido. O status deve ser "pendente" ou "concluida".', 16, 1);
+        RETURN;
+    END
+
+
     INSERT INTO dbo.tarefas_tarefa (descricao, status, data_criacao, data_conclusao)
     VALUES (@descricao, @status, GETDATE(), NULL);
 
-     SET @nova_tarefa_id = SCOPE_IDENTITY();
+    SET @nova_tarefa_id = SCOPE_IDENTITY();
 
     SELECT tarefa_id, descricao, status, data_criacao, data_conclusao
     FROM dbo.tarefas_tarefa
