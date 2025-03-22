@@ -89,6 +89,7 @@ GO
 1. Aplique as migrações:
 
 ```sh
+python manage.py makemigrations
 python manage.py migrate
 ```
 
