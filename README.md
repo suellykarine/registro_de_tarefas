@@ -16,10 +16,18 @@ Este projeto consiste em um sistema de registro de tarefas desenvolvido em Pytho
     - [Gerar Relatório de Tarefas](#gerar-relatório-de-tarefas)
   - [Endpoints da API](#endpoints-da-api)
     - [Criar uma nova tarefa](#criar-uma-nova-tarefa)
+      - [Descrição](#descrição)
+      - [Request Body](#request-body)
     - [Listar todas as tarefas](#listar-todas-as-tarefas)
+      - [Descrição](#descrição-1)
     - [Atualizar o status de uma tarefa](#atualizar-o-status-de-uma-tarefa)
+      - [Descrição](#descrição-2)
+      - [Parâmetros](#parâmetros)
     - [Excluir uma tarefa](#excluir-uma-tarefa)
+      - [Descrição](#descrição-3)
+      - [Parâmetros](#parâmetros-1)
     - [Gerar relatório de tarefas](#gerar-relatório-de-tarefas-1)
+      - [Descrição](#descrição-4)
   - [Relatórios](#relatórios)
   - [Swagger e Documentação](#swagger-e-documentação)
   - [Tecnologias Utilizadas](#tecnologias-utilizadas)
@@ -29,11 +37,15 @@ Este projeto consiste em um sistema de registro de tarefas desenvolvido em Pytho
 
 ### Pré-requisitos
 
-- Python 3.9+
-- Django Rest Framework
+- Python 3.13.2
+- Django==5.0.13
+- djangorestframework==3.15.2
+- mssql-django==1.5
 - SQL Server
+- pyodbc==5.2.0
 - Git
 - Virtualenv
+- drf-spectacular==0.28.0
 
 ### Configuração do ambiente
 
@@ -62,33 +74,36 @@ Este projeto consiste em um sistema de registro de tarefas desenvolvido em Pytho
 USE registro_de_tarefas;
 GO
 
-
 IF OBJECT_ID('dbo.tarefas_tarefa', 'U') IS NOT NULL
-DROP TABLE dbo.tarefas_tarefa;
+    DROP TABLE dbo.tarefas_tarefa;
 GO
 
+
 CREATE TABLE dbo.tarefas_tarefa (
-tarefa_id INT IDENTITY(1,1) PRIMARY KEY,
-descricao VARCHAR(255) NOT NULL,
-status VARCHAR(50) NOT NULL,
-data_criacao DATETIME2 NOT NULL DEFAULT GETDATE(),
-data_conclusao DATETIME2 NULL
+    tarefa_id INT IDENTITY(1,1) PRIMARY KEY,
+    descricao VARCHAR(255) NOT NULL,
+    status VARCHAR(50) NOT NULL CHECK (status IN ('pendente', 'concluída')),
+    data_criacao DATETIME2 NOT NULL DEFAULT GETDATE(),
+    data_conclusao DATETIME2 NULL
 );
 GO
 
+
 INSERT INTO dbo.tarefas_tarefa (descricao, status, data_criacao, data_conclusao)
 VALUES
-('Estudar para o teste', 'pendente', GETDATE(), NULL),
-('Fazer exercícios', 'concluída', GETDATE(), GETDATE()),
-('Revisar código', 'concluída', GETDATE(), GETDATE()),
-('Preparar documentação', 'pendente', GETDATE(), NULL),
-('Enviar e-mail', 'concluída', GETDATE(), GETDATE());
+    ('Estudar para o teste', 'pendente', GETDATE(), NULL),
+    ('Fazer exercícios', 'concluída', GETDATE(), GETDATE()),
+    ('Revisar código', 'concluída', GETDATE(), GETDATE()),
+    ('Preparar documentação', 'pendente', GETDATE(), NULL),
+    ('Enviar e-mail', 'concluída', GETDATE(), GETDATE());
 GO
+
 ```
 
 1. Aplique as migrações:
 
 ```sh
+python manage.py makemigrations
 python manage.py migrate
 ```
 
@@ -130,16 +145,25 @@ AS
 BEGIN
     SET NOCOUNT ON;
 
+
+    IF @status NOT IN ('pendente', 'concluida')
+    BEGIN
+        RAISERROR('Status inválido. O status deve ser "pendente" ou "concluida".', 16, 1);
+        RETURN;
+    END
+
+
     INSERT INTO dbo.tarefas_tarefa (descricao, status, data_criacao, data_conclusao)
     VALUES (@descricao, @status, GETDATE(), NULL);
 
-     SET @nova_tarefa_id = SCOPE_IDENTITY();
+    SET @nova_tarefa_id = SCOPE_IDENTITY();
 
     SELECT tarefa_id, descricao, status, data_criacao, data_conclusao
     FROM dbo.tarefas_tarefa
     WHERE tarefa_id = @nova_tarefa_id;
 END;
 GO
+
 
 ```
 
@@ -153,9 +177,15 @@ AS
 BEGIN
     SET NOCOUNT ON;
 
-    IF NOT EXISTS (SELECT 1 FROM tarefas_tarefa WHERE tarefa_id = @tarefa_id)
+     IF NOT EXISTS (SELECT 1 FROM tarefas_tarefa WHERE tarefa_id = @tarefa_id)
     BEGIN
         RAISERROR('Tarefa não encontrada.', 16, 1);
+        RETURN;
+    END
+
+    IF @novo_status NOT IN ('concluida', 'pendente')
+    BEGIN
+        RAISERROR('Status inválido. O status deve ser "concluida" ou "pendente".', 16, 1);
         RETURN;
     END
 
@@ -168,8 +198,10 @@ BEGIN
                           END
     WHERE tarefa_id = @tarefa_id;
 
+
     SELECT @novo_status AS novo_status;
 END;
+
 
 ```
 
@@ -216,6 +248,23 @@ END;
 
 `POST /tarefas/`
 
+#### Descrição
+
+Adiciona uma nova tarefa ao sistema.
+
+#### Request Body
+
+```json
+{
+  "descricao": "Estudar python",
+  "status": "pendente"
+}
+```
+
+Respostas:
+
+201:
+
 ```json
 {
   "detail": "Tarefa criada com sucesso",
@@ -227,9 +276,33 @@ END;
 }
 ```
 
+400:
+
+```http
+{
+  "detail": "descrição e status são obrigatórios."
+}
+```
+
+500:
+
+```http
+{
+  "detail": "Erro ao cadastrar uma tarefa"
+}
+```
+
 ### Listar todas as tarefas
 
 `GET /tarefas/listar/`
+
+#### Descrição
+
+Listar todas as tarefas cadastradas.
+
+Respostas
+
+200 :
 
 ```json
 [
@@ -250,14 +323,58 @@ END;
 ]
 ```
 
+500:
+
+```http
+{
+  "detail": "Erro ao listar as tarefas"
+}
+```
+
 ### Atualizar o status de uma tarefa
 
 `PATCH /tarefas/<int:pk>/atualizar-status/`
 
-```json
+#### Descrição
+
+Atualiza uma tarefa específica com base no ID (pk) fornecido.
+
+#### Parâmetros
+
+pk (obrigatório): ID da tarefa que será atualizada.
+
+Respostas
+
+200:
+
+```http
 {
   "detail": "Status da tarefa atualizado com sucesso.",
   "status": "concluida"
+
+```
+
+400:
+
+```http
+{
+  "detail": "O campo 'status' é obrigatório."
+}
+```
+
+404:
+
+```http
+{
+  "detail": "Tarefa não encontrada."
+}
+```
+
+500:
+
+```http
+{
+  "detail": "Erro ao atualizar uma tarefa"
 }
 ```
 
@@ -265,15 +382,51 @@ END;
 
 `DELETE /tarefas/<int:pk>/excluir/`
 
-```json
+#### Descrição
+
+Exclui uma tarefa específica com base no ID (pk) fornecido.
+
+#### Parâmetros
+
+pk (obrigatório): ID da tarefa que será excluída.
+
+Respostas
+
+200 :
+
+```http
 {
-  "detail": "Tarefa excluída com sucesso."
+"detail": "Tarefa excluída com sucesso."
+}
+```
+
+400:
+
+```http
+{
+  "detail": "Tarefa não encontrada."
+}
+```
+
+500:
+
+```http
+{
+  "detail": "Erro ao excluir a tarefa"
 }
 ```
 
 ### Gerar relatório de tarefas
 
 `GET /tarefas/relatorio/`
+
+#### Descrição
+
+Gera um relatório com o total de tarefas incluindo as pendentes e concluídas e seus respectivos detalhes.
+
+Respostas
+
+200 :
 
 ```json
 {
@@ -305,9 +458,49 @@ END;
 }
 ```
 
+500:
+
+```http
+{
+  "detail": "Erro ao gerar relatório"
+}
+```
+
 ## Relatórios
 
 O relatório de tarefas apresenta as seguintes informações:
+
+```json
+{
+  "quantidade total de tarefas": ,
+  "tarefas concluidas": {
+    "quantidade": ,
+    "tarefas": [
+      {
+        "tarefa_id": "",
+        "descricao": "",
+        "status": "",
+        "data_criacao": "",
+        "data_conclusao": ""
+      }
+    ]
+  },
+  "tarefas pendentes": {
+    "quantidade": ,
+    "tarefas": [
+      {
+        "tarefa_id": "",
+        "descricao": "",
+        "status": "",
+        "data_criacao": "",
+        "data_conclusao": ""
+      }
+    ]
+  }
+}
+```
+
+Exemplo:
 
 ```json
 {
@@ -349,10 +542,15 @@ http://127.0.0.1:8000/api/docs/
 
 ## Tecnologias Utilizadas
 
-- Python
-- Django Rest Framework
+- Python 3.13.2
+- Django==5.0.13
+- djangorestframework==3.15.2
+- mssql-django==1.5
 - SQL Server
+- pyodbc==5.2.0
 - Git
+- Virtualenv
+- drf-spectacular==0.28.0
 
 ---
 
