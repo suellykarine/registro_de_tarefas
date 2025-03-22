@@ -211,7 +211,7 @@ END;
 ### Criar uma nova tarefa
 
 `POST /tarefas/`
-
+201:
 ```json
 {
   "detail": "Tarefa criada com sucesso",
@@ -220,6 +220,18 @@ END;
   "status": "pendente",
   "data_criacao": "2025-03-21T16:35:56.646666",
   "data_conclusao": null
+}
+```
+400:
+```http
+{
+  "detail": "descrição e status são obrigatórios."
+}
+```
+500:
+```http
+{
+  "detail": "Erro ao excluir a tarefa"
 }
 ```
 
