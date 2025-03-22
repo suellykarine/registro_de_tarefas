@@ -213,7 +213,7 @@ END;
 `POST /tarefas/`
 
 #### Descrição
-Cria uma nova tarefa.
+Adiciona uma nova tarefa ao sistema.
 
 Respostas:
 
@@ -347,6 +347,12 @@ Respostas
 
 `GET /tarefas/relatorio/`
 
+#### Descrição
+Gera um relatório com o total de tarefas incluindo as pendentes e concluídas e seus respectivos detalhes.
+
+Respostas
+200 : 
+
 ```json
 {
   "quantidade total de tarefas": 2,
@@ -374,6 +380,12 @@ Respostas
       }
     ]
   }
+}
+```
+500:
+```http
+{
+  "detail": "Erro ao gerar relatório"
 }
 ```
 
