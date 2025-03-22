@@ -218,7 +218,7 @@ Adiciona uma nova tarefa ao sistema.
 #### Request Body
 ```json
 {
-  "descricao": "teste",
+  "descricao": "Estudar python",
   "status": "pendente"
 }
 ```
