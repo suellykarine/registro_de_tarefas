@@ -227,6 +227,11 @@ END;
 
 `GET /tarefas/listar/`
 
+#### Descrição
+Listar todas as tarefas cadastradas.
+
+Respostas
+200 OK: 
 ```json
 [
   {
@@ -244,6 +249,12 @@ END;
     "data_conclusao": "2025-03-22T12:00:00Z"
   }
 ]
+```
+500:
+```http
+{
+  "detail": "Erro ao excluir a tarefa"
+}
 ```
 
 ### Atualizar o status de uma tarefa
