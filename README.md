@@ -30,10 +30,14 @@ Este projeto consiste em um sistema de registro de tarefas desenvolvido em Pytho
 ### Pré-requisitos
 
 - Python 3.9+
-- Django Rest Framework
+- Django==5.0.13
+- djangorestframework==3.15.2
+- mssql-django==1.5
 - SQL Server
+- pyodbc==5.2.0
 - Git
 - Virtualenv
+- drf-spectacular==0.28.0
 
 ### Configuração do ambiente
 
