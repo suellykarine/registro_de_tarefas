@@ -262,8 +262,7 @@ END;
 `DELETE /tarefas/<int:pk>/excluir/`
 
 ```json
-{
-  "detail": "Tarefa excluída com sucesso."
+{ 200:"detail": "Tarefa excluída com sucesso."
 }
 ```
 
