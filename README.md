@@ -215,6 +215,13 @@ END;
 #### Descrição
 Adiciona uma nova tarefa ao sistema.
 
+#### Request Body
+```json
+{
+  "descricao": "teste",
+  "status": "pendente"
+}
+```
 Respostas:
 
 201:
