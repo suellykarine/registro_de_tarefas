@@ -237,7 +237,7 @@ Respostas:
 500:
 ```http
 {
-  "detail": "Erro ao excluir a tarefa"
+  "detail": "Erro ao cadastrar uma tarefa"
 }
 ```
 
@@ -271,7 +271,7 @@ Respostas
 500:
 ```http
 {
-  "detail": "Erro ao excluir a tarefa"
+  "detail": "Erro ao listar as tarefas"
 }
 ```
 
@@ -286,6 +286,7 @@ Atualiza uma tarefa específica com base no ID (pk) fornecido.
 pk (obrigatório): ID da tarefa que será atualizada.
 
 Respostas
+
 200: 
 ```http
 {
@@ -308,7 +309,7 @@ Respostas
 500:
 ```http
 {
-  "detail": "Erro ao excluir a tarefa"
+  "detail": "Erro ao atualizar uma tarefa"
 }
 ```
 
