@@ -431,6 +431,37 @@ Respostas
 
 O relatório de tarefas apresenta as seguintes informações:
 
+```json
+{
+  "quantidade total de tarefas": ,
+  "tarefas concluidas": {
+    "quantidade": ,
+    "tarefas": [
+      {
+        "tarefa_id": "",
+        "descricao": "",
+        "status": "",
+        "data_criacao": "",
+        "data_conclusao": ""
+      }
+    ]
+  },
+  "tarefas pendentes": {
+    "quantidade": ,
+    "tarefas": [
+      {
+        "tarefa_id": "",
+        "descricao": "",
+        "status": "",
+        "data_criacao": "",
+        "data_conclusao": ""
+      }
+    ]
+  }
+}
+```
+
+Exemplo:
 
 ```json
 {
@@ -472,10 +503,15 @@ http://127.0.0.1:8000/api/docs/
 
 ## Tecnologias Utilizadas
 
-- Python
-- Django Rest Framework
+- Python 3.13.2
+- Django==5.0.13
+- djangorestframework==3.15.2
+- mssql-django==1.5
 - SQL Server
+- pyodbc==5.2.0
 - Git
+- Virtualenv
+- drf-spectacular==0.28.0
 
 ---
 
