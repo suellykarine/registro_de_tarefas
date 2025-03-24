@@ -3,11 +3,11 @@ from django.db import models
 
 class Tarefa(models.Model):
     PENDENTE = "pendente"
-    CONCLUIDA = "concluída"
+    CONCLUIDA = "concluida"
 
     STATUS_CHOICES = [
         (PENDENTE, "Pendente"),
-        (CONCLUIDA, "Concluída"),
+        (CONCLUIDA, "Concluida"),
     ]
 
     tarefa_id = models.AutoField(primary_key=True)

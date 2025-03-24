@@ -77,11 +77,11 @@ WSGI_APPLICATION = "registro_de_tarefas.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "mssql",  #
+        "ENGINE": "mssql",
         "NAME": "registro_de_tarefas",
-        "USER": "seu usuario aqui",
-        "PASSWORD": "sua senha aqui",
-        "HOST":"",
+        "USER": "suelly_usuario",
+        "PASSWORD": "Sk151181",
+        "HOST": r"DESKTOP-48P9BRS\SQLEXPRESS",
         "PORT": "",
         "OPTIONS": {
             "driver": "ODBC Driver 17 for SQL Server",
