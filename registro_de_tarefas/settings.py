@@ -79,9 +79,9 @@ DATABASES = {
     "default": {
         "ENGINE": "mssql",
         "NAME": "registro_de_tarefas",
-        "USER": "suelly_usuario",
-        "PASSWORD": "Sk151181",
-        "HOST": r"DESKTOP-48P9BRS\SQLEXPRESS",
+        "USER": "seu usuario",
+        "PASSWORD": "sua senha",
+        "HOST": "",
         "PORT": "",
         "OPTIONS": {
             "driver": "ODBC Driver 17 for SQL Server",
